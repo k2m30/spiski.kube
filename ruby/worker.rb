@@ -32,13 +32,14 @@ def update_sheet(service, spreadsheet_id, sheet_name, sheet_id)
 
   ActiveRecord::Base.transaction do
     headers = response.values.first
-    response.values.each do |row|
+    response.values[1..].each do |row|
       record_id = row[0].to_i rescue next
       if record_id > 0
         begin
           date = Date.parse(row[19]) rescue nil
           date = nil if !date.nil? and date.year < 2020
-          Record.find_or_create_by(record_id: record_id, sheet_id: sheet_id).update!(last_name: row[15], date: date, full_info: JSON[Hash[headers[2..-1].zip(row[2..-1])]].force_encoding('UTF-8'))
+          full_info = JSON[Hash[headers[1..].zip(row[1..])]]
+          Record.find_or_create_by(record_id: record_id, sheet_id: sheet_id).update!(last_name: row[15], date: date, full_info: full_info)
         rescue => e
           p row
           p e.message

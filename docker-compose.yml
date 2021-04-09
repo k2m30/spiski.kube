@@ -1,12 +1,35 @@
 services:
 
-  app:
+  worker:
     build:
       context: ruby/
       dockerfile: Dockerfile
     depends_on:
       - db
     env_file: .env
+    networks:
+      - default
+
+  server:
+    build:
+      context: server/
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file: .env
+    ports:
+      - 8080:8080
+    networks:
+      - default
+
+  client:
+    image: nginx:1.19-alpine
+    depends_on:
+      - server
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    ports:
+      - 8083:80
     networks:
       - default
 

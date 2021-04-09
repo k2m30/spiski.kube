@@ -3,7 +3,7 @@ require 'mysql2'
 
 ActiveRecord::Base.establish_connection(
   adapter: 'mysql2',
-  host: 'db',
+  host: ENV['MYSQL_HOST'],
   port: 3306,
   username: 'root',
   pool: 5,

@@ -18,18 +18,18 @@ services:
       - db
     env_file: .env
     ports:
-      - 8080:8080
+      - 8081:8080
     networks:
       - default
 
   client:
-    image: nginx:1.19-alpine
+    build:
+      context: client/
+      dockerfile: Dockerfile
     depends_on:
       - server
-    volumes:
-      - ./client:/usr/share/nginx/html:ro
     ports:
-      - 8083:80
+      - 8080:80
     networks:
       - default
 

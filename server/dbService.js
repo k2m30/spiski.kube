@@ -4,7 +4,7 @@ let instance = null;
 dotenv.config();
 
 const connection = mysql.createConnection({
-    host: '127.0.0.1',
+    host: process.env.MYSQL_HOST,
     user: 'root',
     password: process.env.MYSQL_ROOT_PASSWORD,
     database: process.env.MYSQL_DATABASE,
@@ -14,6 +14,9 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) {
         console.log(err.message);
+        console.log(process.env.MYSQL_HOST);
+        console.log(process.env.MYSQL_DATABASE);
+        console.log(process.env.MYSQL_ROOT_PASSWORD);
     }
     // console.log('db ' + connection.state);
 });

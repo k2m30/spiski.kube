@@ -15,6 +15,7 @@ server.use(express.urlencoded({extended: false}));
 
 server.get('/', (request, response) => {
     const q = request.query['q'];
+    console.log(`got request, query=${q}`)
     const db = dbService.getDbServiceInstance();
 
     const result = db.search(q);

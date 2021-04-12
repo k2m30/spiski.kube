@@ -22,6 +22,7 @@ def init
   authorization = Google::Auth.get_application_default(SCOPE)
   @service = Google::Apis::SheetsV4::SheetsService.new
   @service.authorization = authorization
+  @logger = Logger.new('logs/error.log')
 end
 
 def update_sheet(service, spreadsheet_id, sheet_name, sheet_id)

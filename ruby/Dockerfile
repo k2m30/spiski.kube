@@ -4,5 +4,5 @@ WORKDIR /app
 COPY Gemfile* /app
 RUN bundle install
 COPY *.rb /app
-
+RUN mkdir logs
 CMD ["ruby", "main.rb"]

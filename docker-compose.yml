@@ -28,6 +28,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - server
+      - db
     ports:
       - 8080:80
     networks:
@@ -50,9 +51,11 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8082:8082
     networks:
       - default
+    depends_on:
+      - db
 
 networks:
   default:

@@ -1,9 +1,7 @@
 services:
 
   worker:
-    build:
-      context: ruby/
-      dockerfile: Dockerfile
+    image: gcp_worker
     depends_on:
       - db
     env_file: .env
@@ -11,21 +9,17 @@ services:
       - default
 
   server:
-    build:
-      context: server/
-      dockerfile: Dockerfile
+    image: gcp_server
     depends_on:
       - db
     env_file: .env
-    ports:
-      - 8081:8080
+    expose:
+      - 8080
     networks:
       - default
 
   client:
-    build:
-      context: client/
-      dockerfile: Dockerfile
+    image: gcp_client
     depends_on:
       - server
       - db
@@ -39,23 +33,12 @@ services:
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     env_file: .env
-    ports:
-      - 3306:3306
+    expose:
+      - 3306
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - default
-
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8082:8082
-    networks:
-      - default
-    depends_on:
-      - db
 
 networks:
   default:

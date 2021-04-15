@@ -29,7 +29,7 @@ services:
       - default
 
   db:
-    image: gcp_db
+    image: mysql:8.0.23
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     env_file: .env

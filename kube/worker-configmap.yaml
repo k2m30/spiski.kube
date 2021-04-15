@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worker-configmap
+data:
+  google_account_type: service_account
+  spreadsheet_id: 1BcRguk-2-oczkrBZVcfN93eDnaMjAxTu5BJMJ2wyDn0

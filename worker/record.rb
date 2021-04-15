@@ -5,7 +5,7 @@ ActiveRecord::Base.establish_connection(
   adapter: 'mysql2',
   host: ENV['MYSQL_HOST'],
   port: 3306,
-  username: 'root',
+  username: ENV['MYSQL_ROOT_USERNAME'],
   pool: 5,
   database: ENV['MYSQL_DATABASE'],
   password: ENV['MYSQL_ROOT_PASSWORD'],

@@ -3,3 +3,4 @@ server/node_modules
 */logs/
 *.log
 *secret*
+/kube/data/

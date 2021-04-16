@@ -47,6 +47,13 @@ spec:
                   key: mysql_host
             - name: MYSQL_PORT
               value: '3306'
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service

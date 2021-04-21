@@ -1,7 +1,7 @@
 services:
 
   worker:
-    image: gcp_worker
+    image: k2m30/ruby_worker:1.0
     depends_on:
       - db
     env_file: .env
@@ -9,7 +9,7 @@ services:
       - default
 
   server:
-    image: gcp_server
+    image: k2m30/js_server:1.0
     depends_on:
       - db
     env_file: .env
@@ -19,7 +19,7 @@ services:
       - default
 
   client:
-    image: gcp_client
+    image: k2m30/nginx_client:1.0
     depends_on:
       - server
       - db

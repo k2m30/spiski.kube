@@ -1,8 +1,9 @@
 services:
 
   worker:
+    image: k2m30/ruby_worker:1.0
     build:
-      context: ruby/
+      context: worker/
       dockerfile: Dockerfile
     depends_on:
       - db
@@ -11,6 +12,7 @@ services:
       - default
 
   server:
+    image: k2m30/js_server:1.0
     build:
       context: server/
       dockerfile: Dockerfile
@@ -23,6 +25,7 @@ services:
       - default
 
   client:
+    image: k2m30/nginx_client:1.0
     build:
       context: client/
       dockerfile: Dockerfile
@@ -41,12 +44,14 @@ services:
     env_file: .env
     ports:
       - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
     networks:
       - default
 
 
   adminer:
-    image: adminer
+    image: adminer:4.8.0
     restart: always
     ports:
       - 8082:8082

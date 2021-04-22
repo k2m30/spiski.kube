@@ -5,3 +5,11 @@ server/node_modules
 *secret*
 ./kube/data/
 ./mysql/data/
+.idea
+/_build
+/cover
+/deps
+/doc
+erl_crash.dump
+*.ez
+rel/

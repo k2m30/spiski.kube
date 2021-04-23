@@ -21,10 +21,8 @@ defmodule App do
     children = [
       worker(App.Poller, []),
       worker(App.Matcher, []),
-      worker(Redix, ["redis://#{System.get_env("REDIS_HOST")}:#{6379}", [name: :redix]], id: {Redix, 0})
+      worker(Redix, ["redis://#{System.get_env("REDIS_HOST")}:6379", [name: :redix, password: System.get_env("REDIS_PASSWORD")]], id: {Redix, 0})
     ]
-    System.get_env("REDIS_PASSWORD")
-    |> IO.inspect
 
     opts = [strategy: :one_for_one, name: App.Supervisor]
     Supervisor.start_link(children, opts)

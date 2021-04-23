@@ -24,10 +24,10 @@ defmodule App.Mixfile do
   def deps do
     [
       {:nadia, "~> 0.7.0"},
-      {:poison, ">= 3.1.0"},
-      {:redix, ">= 0.0.0"},
-      {:castore, ">= 0.0.0"},
-      {:httpoison, ">= 1.6.2"},
+      {:poison, "~> 3.1.0"},
+      {:redix, "~> 1.0.0"},
+      {:castore, "~> 0.1.8"},
+      {:httpoison, "~> 1.7.0"},
       {:logger_file_backend, "~> 0.0.11"},
       {:distillery, "~> 2.0"}
     ]

@@ -18,12 +18,13 @@ defmodule App do
     end
 
     import Supervisor.Spec, warn: false
-
     children = [
       worker(App.Poller, []),
       worker(App.Matcher, []),
-      {Redix, name: :redix}
+      worker(Redix, ["redis://#{System.get_env("REDIS_HOST")}:#{6379}", [name: :redix]], id: {Redix, 0})
     ]
+    System.get_env("REDIS_PASSWORD")
+    |> IO.inspect
 
     opts = [strategy: :one_for_one, name: App.Supervisor]
     Supervisor.start_link(children, opts)

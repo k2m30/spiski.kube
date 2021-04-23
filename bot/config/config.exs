@@ -1,7 +1,5 @@
 use Mix.Config
 
-System.get_env("BOT_TOKEN") |> IO.inspect
-
 config :app,
   bot_name: "SpiskiLiveBot"
 

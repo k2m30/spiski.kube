@@ -5,7 +5,7 @@ defmodule App.Mixfile do
     [
       app: :app,
       version: "1.0.2",
-      elixir: "~> 1.7.2",
+      elixir: ">= 1.7.2",
       default_task: "server",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -21,13 +21,13 @@ defmodule App.Mixfile do
     ]
   end
 
-  defp deps do
+  def deps do
     [
-      {:nadia, "~> 0.6.0"},
-      {:poison, "~> 3.1"},
+      {:nadia, "~> 0.7.0"},
+      {:poison, ">= 3.1.0"},
       {:redix, ">= 0.0.0"},
       {:castore, ">= 0.0.0"},
-      {:httpoison, "~> 1.6.2"},
+      {:httpoison, ">= 1.6.2"},
       {:logger_file_backend, "~> 0.0.11"},
       {:distillery, "~> 2.0"}
     ]

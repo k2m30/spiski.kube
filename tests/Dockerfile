@@ -6,7 +6,7 @@ WORKDIR /app
 COPY Gemfile* /app/
 RUN bundle install
 
+COPY Rakefile /app/
 COPY *.rb /app/
 RUN mkdir logs
-CMD ["ruby", "-Ilib:test", "integration.rb"]
-#CMD ["ruby", "-Ilib:test", "db.rb"]
+CMD ["rake", "test"]

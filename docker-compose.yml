@@ -11,6 +11,18 @@ services:
     networks:
       - default
 
+  tests:
+    image: k2m30/tests:1.0
+    build:
+      context: tests/
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - client
+    env_file: .env
+    networks:
+      - default
+
   server:
     image: k2m30/js_server:1.0
     build:
@@ -35,7 +47,9 @@ services:
     ports:
       - 8080:80
     networks:
-      - default
+      default:
+        aliases:
+          - spiski.live
 
   db:
     image: mysql:8.0.23
@@ -78,7 +92,6 @@ services:
         BOT_TOKEN:
         REDIS_HOST:
         REDIS_PASSWORD:
-
     env_file: .env
     restart: always
     networks:

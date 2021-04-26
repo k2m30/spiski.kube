@@ -94,9 +94,11 @@
                         <%- include('_item', {person: JSON.parse(person.full_info)}); %>
                     <% } %>
                     <% if (data.results.length === 0){ %>
-                        <p>Информации о задержании такого человека нет. Если вы уверены, что это не так, напишите <b>ФИО и
+                        <p>Информации о задержании такого человека нет. Если вы уверены, что это не так, напишите <b>ФИО
+                                и
                                 дату задержания</b> в Телеграме в
-                            <a href="https://t.me/spiskov_net_bot" target="_blank">@spiskov_net_bot</a></p>
+                            <a href="https://t.me/spiskov_net_bot" target="_blank">@spiskov_net_bot</a>
+                        </p>
                         <hr/>
                     <% } %>
                 </div>
@@ -160,7 +162,8 @@
                 <p class="black-text text-lighten-4">Информация собрана волонтёрами канала <a
                             href="https://t.me/spiski_okrestina" target="_blank">@spiski_okrestina</a> из всех доступных
                     источников. </p>
-                <p class="black-text text-lighten-4"><%=`В базе информация о ${data.size} задержаниях с 09.08.2020` %></p>
+                <p class="black-text text-lighten-4">В базе информация о <span id="count"><%= `${data.size}` %></span>
+                    задержаниях с 09.08.2020</p>
             </div>
             <div class="col s12 m4 l2"></div>
         </div>

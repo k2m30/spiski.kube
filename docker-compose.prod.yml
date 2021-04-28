@@ -53,17 +53,6 @@ services:
     networks:
       - default
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-challenges:/etc/letsencrypt/challenges
-    depends_on:
-      - client
-    command: certonly --webroot --webroot-path=/etc/letsencrypt/challenges --rsa-key-size 4096 --email 1m@tut.by --agree-tos --no-eff-email -d docker.spiski.live
-
 volumes:
   certbot-etc:
     driver: local

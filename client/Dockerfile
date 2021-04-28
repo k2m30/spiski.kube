@@ -1,7 +1,9 @@
 FROM nginx:1.19-alpine
 RUN apk add --no-cache \
     curl \
-    openssl
+    openssl \
+    certbot \
+    certbot-nginx
 
 COPY default.conf /etc/nginx/conf.d/
 COPY 40-install-initial-certificates.sh /docker-entrypoint.d

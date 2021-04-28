@@ -30,7 +30,7 @@ class DbService {
     async search(last_name) {
         try {
             const response = await new Promise((resolve, reject) => {
-                const query = "SELECT date, last_name, full_info FROM records WHERE last_name = ? ORDER BY date;";
+                const query = "SELECT date, last_name, full_info FROM records WHERE last_name = ? ORDER BY date DESC;";
 
                 connection.query(query, [last_name], (err, results) => {
                     if (err) reject(new Error(err.message));

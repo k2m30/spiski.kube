@@ -17,9 +17,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: worker
-          image: worker
-          imagePullPolicy: IfNotPresent
-
+          image: k2m30/ruby_worker:1.0
           env:
             - name: GOOGLE_CLIENT_EMAIL
               valueFrom:

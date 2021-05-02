@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: server
-          imagePullPolicy: IfNotPresent
+          image: k2m30/js_server:1.0
           ports:
             - containerPort: 8080
           env:

@@ -3,7 +3,7 @@ server/node_modules
 */logs/
 *.log
 *secret*
-kube/data/
+data/
 mysql/data/
 .idea
 _build

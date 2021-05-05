@@ -1,0 +1,7 @@
+resources:
+  - ingress.yaml
+  - worker-deployment.yaml
+#  - server-deployment.yaml
+  - worker-secret.yaml
+  - worker-configmap.yaml
+  - mysql-configmap.yaml

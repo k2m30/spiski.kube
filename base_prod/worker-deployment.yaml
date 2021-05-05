@@ -1,0 +1,63 @@
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: worker
+
+apiVersion: apps/v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: worker
+          image: k2m30/ruby_worker:1.0
+          env:
+            - name: GOOGLE_CLIENT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: worker-secret
+                  key: google_client_email
+            - name: GOOGLE_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: worker-secret
+                  key: google_private_key
+            - name: GOOGLE_ACCOUNT_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: worker-configmap
+                  key: google_account_type
+            - name: SPREADSHEET_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: worker-configmap
+                  key: spreadsheet_id
+
+            - name: MYSQL_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-configmap
+                  key: mysql_root_username
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-cluster-secrets
+                  key: root
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-configmap
+                  key: mysql_db_name
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-configmap
+                  key: mysql_host

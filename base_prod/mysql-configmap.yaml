@@ -1,0 +1,9 @@
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+
+apiVersion: v1
+data:
+  mysql_host: cluster1-haproxy
+  mysql_db_name: db
+  mysql_root_username: root

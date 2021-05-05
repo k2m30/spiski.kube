@@ -1,0 +1,8 @@
+bases:
+  - ../base
+
+resources:
+  - mysql-configmap.yaml
+  - mysql-deployment.yaml
+  - mysql-pvc.yaml
+  - mysql-secret.yaml

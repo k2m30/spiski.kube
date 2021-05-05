@@ -13,3 +13,5 @@ doc
 erl_crash.dump
 *.ez
 rel/
+.local.tunnels
+percona-xtradb-cluster-operator/

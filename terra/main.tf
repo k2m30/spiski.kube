@@ -8,15 +8,23 @@ resource "libvirt_pool" "kube" {
   path = var.libvirt_disk_path
 }
 
-resource "libvirt_volume" "ubuntu-volume" {
-  count = var.instances_count
-  name = "ubuntu-volume-${count.index}"
+resource "libvirt_volume" "ubuntu-template-volume" {
+  name = "ubuntu-template-volume"
   pool = libvirt_pool.kube.name
   source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
-data "template_file" "user_data" {
+resource "libvirt_volume" "controller-volume" {
+  base_volume_id = libvirt_volume.ubuntu-template-volume.id
+  count = var.instances_count
+  name = "ubuntu-volume-${count.index}"
+
+  pool = libvirt_pool.kube.name
+  format = "qcow2"
+}
+
+data "template_file" "image_config" {
   count = var.instances_count
   vars = {
     HOSTNAME = "controller-${count.index}"
@@ -24,15 +32,10 @@ data "template_file" "user_data" {
   template = file("${path.module}/config/cloud_init.yml")
 }
 
-data "template_file" "network_config" {
-  template = file("${path.module}/config/network_config.yml")
-}
-
 resource "libvirt_cloudinit_disk" "commoninit" {
   count = var.instances_count
   name = "commoninit-${count.index}.iso"
-  user_data = data.template_file.user_data[count.index].rendered
-  network_config = data.template_file.network_config.rendered
+  user_data = data.template_file.image_config[count.index].rendered
   pool = libvirt_pool.kube.name
 
 }
@@ -46,9 +49,9 @@ resource "libvirt_domain" "kube-cluster" {
   cloudinit = libvirt_cloudinit_disk.commoninit[count.index].id
 
   network_interface {
-    network_name = "default"
+    network_id = libvirt_network.kube-network.id
     wait_for_lease = true
-//    hostname = "controller-${count.index}"
+    hostname = "controller-${count.index}"
   }
 
   console {
@@ -64,7 +67,7 @@ resource "libvirt_domain" "kube-cluster" {
   }
 
   disk {
-    volume_id = libvirt_volume.ubuntu-volume[count.index].id
+    volume_id = libvirt_volume.controller-volume[count.index].id
   }
 
   graphics {

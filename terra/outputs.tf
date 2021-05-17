@@ -1,7 +1,11 @@
 output "ip" {
-  value = libvirt_domain.kube-cluster.*.network_interface[0]
+  value = libvirt_domain.kube-cluster.*.network_interface.0.addresses
 }
 
 output "hostnames" {
-  value = libvirt_domain.kube-cluster.*
+  value = libvirt_domain.kube-cluster.*.network_interface.0.hostname
+}
+
+output "network" {
+  value = libvirt_network.kube-network
 }

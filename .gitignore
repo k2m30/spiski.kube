@@ -15,3 +15,6 @@ erl_crash.dump
 rel/
 .local.tunnels
 percona-xtradb-cluster-operator/
+.terraform/
+*.tfstate*
+*.lock*

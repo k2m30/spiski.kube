@@ -10,7 +10,7 @@ resource "libvirt_pool" "kube" {
 
 resource "libvirt_volume" "ubuntu-qcow2" {
   name = "ubuntu-qcow2"
-  pool = "default"
+  pool = libvirt_pool.kube.name
   source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
@@ -27,7 +27,7 @@ resource "libvirt_cloudinit_disk" "commoninit" {
   name = "commoninit.iso"
   user_data = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
-  pool = "default"
+  pool = libvirt_pool.kube.name
 
 }
 

@@ -1,6 +1,6 @@
 variable "libvirt_disk_path" {
   description = "path for libvirt pool"
-  default = "/srv/storage/virt-storage"
+  default = "/srv/storage/virt-storage/kube"
 }
 
 variable "vm_hostname" {

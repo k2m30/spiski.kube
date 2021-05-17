@@ -3,11 +3,6 @@ variable "libvirt_disk_path" {
   default = "/srv/storage/virt-storage/kube"
 }
 
-variable "vm_hostname" {
-  description = "vm hostname"
-  default = "spiski.live.dev"
-}
-
 variable "ssh_username" {
   description = "the ssh user to use"
   default = "ubuntu"
@@ -16,4 +11,9 @@ variable "ssh_username" {
 variable "ssh_private_key" {
   description = "the private key to use"
   default = "~/.ssh/id_rsa"
+}
+
+variable "instances_count" {
+  description = "How many controllers"
+  default = 2
 }

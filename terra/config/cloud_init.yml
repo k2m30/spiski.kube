@@ -5,6 +5,7 @@ bootcmd:
 runcmd:
   - [ ls, -l, / ]
   - [ sh, -xc, "echo $(date) ': hello world!'" ]
+  - hostnamectl set-hostname ${HOSTNAME}
 ssh_pwauth: true
 disable_root: false
 chpasswd:

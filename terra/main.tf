@@ -8,14 +8,19 @@ resource "libvirt_pool" "kube" {
   path = var.libvirt_disk_path
 }
 
-resource "libvirt_volume" "ubuntu-qcow2" {
-  name = "ubuntu-qcow2"
+resource "libvirt_volume" "ubuntu-volume" {
+  count = var.instances_count
+  name = "ubuntu-volume-${count.index}"
   pool = libvirt_pool.kube.name
   source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
 data "template_file" "user_data" {
+  count = var.instances_count
+  vars = {
+    HOSTNAME = "controller-${count.index}"
+  }
   template = file("${path.module}/config/cloud_init.yml")
 }
 
@@ -24,24 +29,26 @@ data "template_file" "network_config" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name = "commoninit.iso"
-  user_data = data.template_file.user_data.rendered
+  count = var.instances_count
+  name = "commoninit-${count.index}.iso"
+  user_data = data.template_file.user_data[count.index].rendered
   network_config = data.template_file.network_config.rendered
   pool = libvirt_pool.kube.name
 
 }
 
-resource "libvirt_domain" "domain-ubuntu" {
-  name = var.vm_hostname
+resource "libvirt_domain" "kube-cluster" {
+  count = var.instances_count
+  name = "controller-${count.index}"
   memory = "512"
   vcpu = 1
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.commoninit[count.index].id
 
   network_interface {
     network_name = "default"
     wait_for_lease = true
-    hostname = var.vm_hostname
+//    hostname = "controller-${count.index}"
   }
 
   console {
@@ -57,7 +64,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.ubuntu-qcow2.id
+    volume_id = libvirt_volume.ubuntu-volume[count.index].id
   }
 
   graphics {
@@ -66,21 +73,24 @@ resource "libvirt_domain" "domain-ubuntu" {
     autoport = true
   }
 
+  connection {
+    type = "ssh"
+    user = var.ssh_username
+    host = self.network_interface.0.addresses.0
+    private_key = file(var.ssh_private_key)
+    bastion_host = "green.mhs.by"
+    bastion_port = 202
+    bastion_user = "ubuntu"
+    bastion_private_key = file(var.ssh_private_key)
+    timeout = "2m"
+  }
+
+
   provisioner "remote-exec" {
     inline = [
-      "echo 'Hello World'"
+      "echo 'Hello World'",
+      "echo $(hostname)"
     ]
-
-    connection {
-      type = "ssh"
-      user = var.ssh_username
-      host = libvirt_domain.domain-ubuntu.network_interface[0].addresses[0]
-      private_key = file(var.ssh_private_key)
-      bastion_host = "green.mhs.by"
-      bastion_port = 202
-      bastion_user = "ubuntu"
-      bastion_private_key = file(var.ssh_private_key)
-      timeout = "2m"
-    }
   }
 }
+

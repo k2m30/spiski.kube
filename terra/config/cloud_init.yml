@@ -1,7 +1,7 @@
 #cloud-config
 
 bootcmd:
-  - echo 192.168.0.1 gw.homedns.xyz >> /etc/hosts
+  - echo $(date) > boot.date
 runcmd:
   - [ ls, -l, / ]
   - [ sh, -xc, "echo $(date) ': hello world!'" ]
@@ -13,13 +13,12 @@ chpasswd:
     root:password
   expire: false
 users:
-  - name: ubuntu
+  - name: ${SSH_USER}
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: users, admin, sudoers
-    home: /home/ubuntu
+    home: /home/${SSH_USER}
     plain_text_passwd: ubuntu
     shell: /bin/bash
     lock_passwd: false
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVOodsAOHJx/WZt2yWGbyGxMvWJa+z7wB9ITQGLtxTieIwA1vzc3Mzhwcqjn1s7XPXVsvb0WUGOtB9dBzmADn+aOpLxnGHVOzZOD5lN8rmeqVCL25y08ma4u9jznYYbOZEJxuvm9SNr44q+i0a1LMfZTffzZPLWw1cXCXUrCiY1SQ8gtJfULe/q3WZqhNOFtP2oqT5vz6WQqtqrS5Os99obDDzlt0VxvTcNKmgYQ75U8Y8qs3r44yF2tbWUB/Kx6411iytYQmUMA1YyI4A4IsCHrUyjNHrpxvcJvg6KeFssEmSSGEB93ytuxEjKD6D6JJWax/G3ddzBNT0Z2UxsHHz mikhail.chuprynski@gmail.com
-final_message: "The system is finally up, after $UPTIME seconds"

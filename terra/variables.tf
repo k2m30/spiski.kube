@@ -5,7 +5,7 @@ variable "libvirt_disk_path" {
 
 variable "ssh_username" {
   description = "the ssh user to use"
-  default = "ubuntu"
+  default = "user"
 }
 
 variable "ssh_private_key" {

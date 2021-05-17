@@ -27,7 +27,8 @@ resource "libvirt_volume" "controller-volume" {
 data "template_file" "image_config" {
   count = var.instances_count
   vars = {
-    HOSTNAME = "controller-${count.index}"
+    HOSTNAME = "controller-${count.index}",
+    SSH_USER = var.ssh_username
   }
   template = file("${path.module}/config/cloud_init.yml")
 }

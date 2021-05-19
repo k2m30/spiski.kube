@@ -13,7 +13,12 @@ variable "ssh_private_key" {
   default = "~/.ssh/id_rsa"
 }
 
-variable "instances_count" {
-  description = "How many controllers"
-  default = 2
+//variable "instances_count" {
+//  description = "How many controllers"
+//  default = 2
+//}
+
+variable "node_names" {
+  type = list(string)
+  default = ["kmaster", "kworker"]
 }

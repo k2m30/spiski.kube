@@ -11,48 +11,50 @@ resource "libvirt_pool" "kube" {
 resource "libvirt_volume" "ubuntu-template-volume" {
   name = "ubuntu-template-volume"
   pool = libvirt_pool.kube.name
-  source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
+//  source = "http://cloud-images.ubuntu.com/releases/focal/release-20210510/ubuntu-20.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
 resource "libvirt_volume" "controller-volume" {
-  base_volume_id = libvirt_volume.ubuntu-template-volume.id
-  count = var.instances_count
-  name = "ubuntu-volume-${count.index}"
+//  base_volume_id = libvirt_volume.ubuntu-template-volume.id
+  base_volume_name = "ubuntu-template-volume"
+  for_each = toset(var.node_names)
+  name = each.key
+  size = 40000000000
 
   pool = libvirt_pool.kube.name
   format = "qcow2"
 }
 
 data "template_file" "image_config" {
-  count = var.instances_count
+  for_each = toset(var.node_names)
   vars = {
-    HOSTNAME = "controller-${count.index}",
+    HOSTNAME = each.key,
     SSH_USER = var.ssh_username
   }
   template = file("${path.module}/config/cloud_init.yml")
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  count = var.instances_count
-  name = "commoninit-${count.index}.iso"
-  user_data = data.template_file.image_config[count.index].rendered
+  for_each = toset(var.node_names)
+  name = "commoninit-${each.key}.iso"
+  user_data = data.template_file.image_config[each.key].rendered
   pool = libvirt_pool.kube.name
 
 }
 
 resource "libvirt_domain" "kube-cluster" {
-  count = var.instances_count
-  name = "controller-${count.index}"
-  memory = "512"
-  vcpu = 1
+  for_each = toset(var.node_names)
+  name = each.key
+  memory = "8192"
+  vcpu = 8
 
-  cloudinit = libvirt_cloudinit_disk.commoninit[count.index].id
+  cloudinit = libvirt_cloudinit_disk.commoninit[each.key].id
 
   network_interface {
     network_id = libvirt_network.kube-network.id
     wait_for_lease = true
-    hostname = "controller-${count.index}"
+    hostname = each.key
   }
 
   console {
@@ -68,7 +70,7 @@ resource "libvirt_domain" "kube-cluster" {
   }
 
   disk {
-    volume_id = libvirt_volume.controller-volume[count.index].id
+    volume_id = libvirt_volume.controller-volume[each.key].id
   }
 
   graphics {

@@ -1,0 +1,8 @@
+[nodes]
+${nodes}
+
+[kube-masters]
+${masters}
+
+[kube-workers]
+${workers}

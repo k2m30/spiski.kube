@@ -1,11 +1,9 @@
-output "all" {
+output "cluster" {
   value = libvirt_domain.kube-cluster.*
 }
 
-output "kmaster" {
-  value = libvirt_domain.kube-cluster["kmaster"].network_interface.*.addresses
-}
-
-output "kworker" {
-  value = libvirt_domain.kube-cluster["kworker"].network_interface.*.addresses
+output "ips" {
+  value = tomap({
+  for node, info in libvirt_domain.kube-cluster : node => info.network_interface.*.addresses[0][0]
+  })
 }

@@ -11,12 +11,12 @@ resource "libvirt_pool" "kube" {
 resource "libvirt_volume" "ubuntu-template-volume" {
   name = "ubuntu-template-volume"
   pool = libvirt_pool.kube.name
-//  source = "http://cloud-images.ubuntu.com/releases/focal/release-20210510/ubuntu-20.04-server-cloudimg-amd64.img"
+  //  source = "http://cloud-images.ubuntu.com/releases/focal/release-20210510/ubuntu-20.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
 resource "libvirt_volume" "controller-volume" {
-//  base_volume_id = libvirt_volume.ubuntu-template-volume.id
+  //  base_volume_id = libvirt_volume.ubuntu-template-volume.id
   base_volume_name = "ubuntu-template-volume"
   for_each = toset(var.node_names)
   name = each.key
@@ -98,5 +98,30 @@ resource "libvirt_domain" "kube-cluster" {
       "echo $(hostname)"
     ]
   }
+
+
+  provisioner "local-exec" {
+    command = <<EOT
+      ansible-playbook -u ${var.ssh_username} --private-key ${var.ssh_private_key} -i nginx.ini ansible/playbook.yml
+      EOT
+  }
+}
+
+data "template_file" "inventory_template" {
+  template = file("../ansible/kube.inventory.template")
+  vars = {
+    nodes = join("\n", toset([
+    for node in libvirt_domain.kube-cluster : node.network_interface[0].addresses[0]
+    ]))
+    masters = libvirt_domain.kube-cluster["kmaster"].network_interface[0].addresses[0]
+    workers = libvirt_domain.kube-cluster["kworker"].network_interface[0].addresses[0]
+  }
+}
+
+resource "local_file" "inventory" {
+  content = data.template_file.inventory_template.rendered
+  filename = "./ansible/kube.inventory"
+  directory_permission = 0755
+  file_permission = 0755
 }
 

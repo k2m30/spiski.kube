@@ -1,0 +1,11 @@
+---
+- hosts: nodes
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes

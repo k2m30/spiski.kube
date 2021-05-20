@@ -11,7 +11,7 @@ resource "libvirt_pool" "kube" {
 resource "libvirt_volume" "ubuntu-template-volume" {
   name = "ubuntu-template-volume"
   pool = libvirt_pool.kube.name
-  //  source = "http://cloud-images.ubuntu.com/releases/focal/release-20210510/ubuntu-20.04-server-cloudimg-amd64.img"
+  source = "http://cloud-images.ubuntu.com/releases/focal/release-20210510/ubuntu-20.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
@@ -100,7 +100,7 @@ resource "libvirt_domain" "kube-cluster" {
 //  }
 
   provisioner "local-exec" {
-    command = "ansible-playbook ../ansible/playbook.yml -i ../ansible/kube.inventory --extra-vars \"version=1.23.45 other_variable=foo\""
+    command = "ansible-playbook ../ansible/playbook.yml -i ../ansible/kube.inventory"
   }
 }
 

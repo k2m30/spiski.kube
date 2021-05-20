@@ -14,6 +14,11 @@
         regexp: 'swap'
         state: absent
 
+    - name: Ensure br_netfilter is enabled.
+      modprobe:
+        name: br_netfilter
+        state: present
+
     - name: Update sysctl settings for Kubernetes networking IPv6
       sysctl:
         sysctl_file: /etc/sysctl.d/kubernetes.conf
@@ -52,6 +57,14 @@
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
         state: present
 
+    - name: Install Docker
+      apt:
+        update_cache: yes
+        package:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
     - name: Add Kubernetes repo
       apt_repository:
         repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
@@ -61,21 +74,17 @@
       apt:
         update_cache: yes
         package:
-          - docker-ce=5:19.03.10~3-0~ubuntu-focal
-          - containerd.io
-          - kubeadm=1.18.5-00
-          - kubelet=1.18.5-00
-        autoclean: yes
-        autoremove: yes
+          - kubeadm
+          - kubelet
+          - kubectl
 
+###############################################################################
 - hosts: kube_masters
   become: yes
   tasks:
     - name: Install kubectl
       apt:
-        package: kubectl=1.18.5-00
-        autoclean: yes
-        autoremove: yes
+        package: kubectl
 
     - name: Init kubeadm
       shell: kubeadm init --apiserver-advertise-address={{inventory_hostname}} --pod-network-cidr=192.168.0.0/16  --ignore-preflight-errors=all

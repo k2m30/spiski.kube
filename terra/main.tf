@@ -92,18 +92,15 @@ resource "libvirt_domain" "kube-cluster" {
   }
 
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Hello World'",
-      "echo $(hostname)"
-    ]
-  }
-
+//  provisioner "remote-exec" {
+//    inline = [
+//      "echo 'Hello World'",
+//      "echo $(hostname)"
+//    ]
+//  }
 
   provisioner "local-exec" {
-    command = <<EOT
-      ansible-playbook -u ${var.ssh_username} --private-key ${var.ssh_private_key} -i nginx.ini ansible/playbook.yml
-      EOT
+    command = "ansible-playbook ../ansible/playbook.yml -i ../ansible/kube.inventory --extra-vars \"version=1.23.45 other_variable=foo\""
   }
 }
 
@@ -115,12 +112,14 @@ data "template_file" "inventory_template" {
     ]))
     masters = libvirt_domain.kube-cluster["kmaster"].network_interface[0].addresses[0]
     workers = libvirt_domain.kube-cluster["kworker"].network_interface[0].addresses[0]
+    user = var.ssh_username
+    ssh_private_key = var.ssh_private_key
   }
 }
 
 resource "local_file" "inventory" {
   content = data.template_file.inventory_template.rendered
-  filename = "./ansible/kube.inventory"
+  filename = "../ansible/kube.inventory"
   directory_permission = 0755
   file_permission = 0755
 }

@@ -18,3 +18,4 @@ percona-xtradb-cluster-operator/
 .terraform/
 *.tfstate*
 *.lock*
+kube.inventory
